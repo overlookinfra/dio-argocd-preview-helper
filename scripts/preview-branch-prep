@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+if [ "$#" -ne 2 ]; then
+  echo "Usage: $0 [repo] [app id]"
+  exit 1
+fi
+
+REPO=$1
+APP_ID=$2
+
+if [ "$(git branch --list ${APP_ID})" ]; then
+  git checkout ${APP_ID}
+else
+  git checkout -b ${APP_ID}
+fi
+
+echo "Syncing ${APP_ID} with origin/${APP_ID} if it exists..."
+git reset --hard origin/${APP_ID} || true
