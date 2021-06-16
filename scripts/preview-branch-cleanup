@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $0 [app id]"
+  exit 1
+fi
+
+APP_ID=$1
+
+if [ "$(git branch --list ${APP_ID}-cleanup)" ]; then
+  git branch -D ${APP_ID}-cleanup
+fi
+
+git checkout -b "${APP_ID}-cleanup"
