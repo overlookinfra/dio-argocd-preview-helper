@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+if [ "$#" -ne 2 ]; then
+  echo "Usage: $0 [current git sha]"
+  exit 1
+fi
+
+CURRENT_SHA=$1
+SECONDS=0
+
+while [ $SECONDS -lt 600 ]; do
+  ((SECONDS=SECONDS+10))
+  gh_ci_status=$(hub ci-status $CURRENT_SHA || echo -n)
+  if [ "$gh_ci_status" = 'success' ]; then
+    echo "CI reports success"
+    break
+  elif [ "$gh_ci_status" = 'no status' ]; then
+    echo "It seems no CI jobs are configured, moving on."
+    break
+  elif [ "$gh_ci_status" = 'failure' ]; then
+    echo "CI failed, exiting"
+    exit 1
+  else
+    sleep 10
+  fi
+done
